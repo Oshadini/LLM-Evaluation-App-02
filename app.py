@@ -23,7 +23,7 @@ st.markdown("""
     html, body, div, span, h1, h2, h3, h4, h5, app-view-root, [class*="css"]  {
         font-family: 'Poppins', sans-serif !important;
     }
-    [data-testid="stColumn"]:has(div:empty) {
+    [data-testid="stHorizontalBlock"]:has([data-testid="stVerticalBlock"]:empty) {
         display: none !important;
     }
     [data-testid="stColumn"] {
@@ -69,19 +69,14 @@ if uploaded_file is not None:
     # Input for number of entity extractions
     num_entities = st.number_input('Number of entities to extract', min_value=1, value=1)
 
-    # Determine the number of rows and columns
-    num_columns = 2
-    num_rows = -(-num_entities // num_columns)  # Round up division
-
-    for row in range(num_rows):
-        columns = st.columns(num_columns)
-        for i in range(num_columns):
-            entity_index = row * num_columns + i
-            if entity_index < num_entities:
-                with columns[i]:
-                    st.markdown(f"#### Entity Details {entity_index + 1}")
-                    st.text_input("Entity Name", key=f'entity_name_{entity_index}')
-                    st.text_area("Additional Context", height=100, key=f'additional_context_{entity_index}')
+    # Render rows dynamically
+    columns = st.columns(num_entities if num_entities < 2 else 2)
+    for entity_index in range(num_entities):
+        col_index = entity_index % 2
+        with columns[col_index]:
+            st.markdown(f"#### Entity Details {entity_index + 1}")
+            st.text_input("Entity Name", key=f'entity_name_{entity_index}')
+            st.text_area("Additional Context", height=100, key=f'additional_context_{entity_index}')
 
     if st.button('Extract Entities'):
         all_entities_provided = True
