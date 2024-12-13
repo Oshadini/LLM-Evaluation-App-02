@@ -20,13 +20,22 @@ st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
 
-    html, body, div, span, h1, h2, h3, h4, h5, app-view-root, [class*="css"]  {
+    html, body, div, span, h1, h2, h3, h4, h5, app-view-root, [class*="css"] {
         font-family: 'Poppins', sans-serif !important;
+        margin: 0;
+        padding: 0;
+        border: none !important;
+        box-shadow: none !important;
     }
     [data-testid="stColumn"] {
         padding: 0 !important;
-        box-shadow: none !important;
         border: none !important;
+        box-shadow: none !important;
+    }
+    [data-baseweb="input"], [data-testid="stTextInput"], [data-testid="stTextArea"] {
+        border: none !important;
+        box-shadow: none !important;
+        background-color: transparent !important;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -76,7 +85,7 @@ if uploaded_file is not None:
             entity_index = row * num_columns + i
             if entity_index < num_entities:
                 with columns[i]:
-                    st.markdown(f"### Entity Details {entity_index + 1}")
+                    st.markdown(f"### Entity Details {entity_index + 1}", unsafe_allow_html=True)
                     st.text_input("Entity Name", key=f'entity_name_{entity_index}')
                     st.text_area("Additional Context", height=100, key=f'additional_context_{entity_index}')
 
