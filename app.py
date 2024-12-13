@@ -6,14 +6,13 @@ from langchain_core.prompts import ChatPromptTemplate
 from dotenv import load_dotenv
 import pdfplumber
 from PIL import Image
-from PIL import Image
 from io import BytesIO
 import base64
 import pandas as pd
 
 load_dotenv()
 
-os.environ["GOOGLE_API_KEY"]=os.getenv("GOOGLE_API_KEY")
+os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY")
 
 llm = ChatGoogleGenerativeAI(
     model="gemini-exp-1206",
@@ -21,7 +20,8 @@ llm = ChatGoogleGenerativeAI(
 )
 
 st.set_page_config(layout="wide", page_title="Named Entities Extraction")
-st.markdown("""
+st.markdown(
+    """
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
 
@@ -29,18 +29,19 @@ st.markdown("""
         font-family: 'Poppins', sans-serif !important;
     }
     </style>
-    """, unsafe_allow_html=True)
-
+    """,
+    unsafe_allow_html=True
+)
 
 st.markdown("<h1 style='text-align: center;'>Named Entities Extraction</h1>", unsafe_allow_html=True)
 
 uploaded_file = st.file_uploader("Choose a PDF file", type="pdf")
 
 def get_entities(formatted_entity_text, text):
-    system = """You are a specialization for recognize entities from the given 'Document Context'.  when user give the 'Entity Name' and the 'Additional Instruction Given For Identify Entity', according to the 'Document Context' you have to identify the entity value from the given 'Document Context'. Identify entity value only. nothing else. Give the output as following format for allthe given Entity Names.
-    
+    system = """You are a specialization for recognize entities from the given 'Document Context'.  when user give the 'Entity Name' and the 'Additional Instruction Given For Identify Entity', according to the 'Document Context' you have to identify the entity value from the given 'Document Context'. Identify entity value only. nothing else. Give the output as following format for all the given Entity Names.
+
     Example : 
-    
+
         ***Entity Name 1:*** <Given Entity Name for Entity Name 1>
         ***Additional Instruction Given For Identify Entity 1:*** <Given Additional Instruction for Entity Name 1>
         ***Entity Value 1:*** <Identified Entity Value for Entity Name 1>
@@ -58,9 +59,9 @@ def get_entities(formatted_entity_text, text):
 
     chain = prompt | llm
     text = "What is the capital of France?"
-    
+
     answer = chain.invoke({})
-    
+
     return answer.content
 
 if uploaded_file is not None:
@@ -74,14 +75,13 @@ if uploaded_file is not None:
     if 'entities' not in st.session_state:
         st.session_state.entities = []
 
-
     # Input for number of entity extractions
     num_entities = st.number_input('Number of entities to extract', min_value=1, value=1)
 
     # Determine the number of rows and columns
     num_columns = 2  # Adjust the number of columns as needed
     num_rows = int((num_entities + num_columns - 1) / num_columns)
-        
+
     st.markdown(
         """
         <style>
@@ -106,7 +106,12 @@ if uploaded_file is not None:
                         st.text_input("Entity Name", key=f'entity_name_{entity_index}')
                         st.text_area("Additional Context", height=100, key=f'additional_context_{entity_index}')
 
-                
+    # Remove empty column borders by adjusting the last row
+    if num_entities % num_columns != 0:
+        extra_cells = num_columns - (num_entities % num_columns)
+        for _ in range(extra_cells):
+            columns[-(extra_cells)].empty()
+
     if st.button('Extract Entities'):
         all_entities_provided = True
         formatted_text = ""
@@ -123,8 +128,6 @@ if uploaded_file is not None:
         if all_entities_provided:
             # Process entity
             entity_value = get_entities(formatted_text, text)
-            # st.write(formatted_text)
-            # st.write(entity_value)
             
             data = []
             entities = entity_value.split("\n\n")
@@ -138,4 +141,3 @@ if uploaded_file is not None:
 
             df = pd.DataFrame(data, columns=["Entity Name", "Additional Context", "Entity Value"])
             st.table(df)
-
