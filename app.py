@@ -23,15 +23,16 @@ st.set_page_config(layout="wide", page_title="Named Entities Extraction")
 st.markdown(
     """
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
-
-    html, body, div, span, h1, h2, h3, h4, h5, app-view-root, [class*="css"]  {
-        font-family: 'Poppins', sans-serif !important;
+    [data-testid="stColumn"]:empty {
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
     }
     </style>
     """,
     unsafe_allow_html=True
 )
+
 
 st.markdown("<h1 style='text-align: center;'>Named Entities Extraction</h1>", unsafe_allow_html=True)
 
@@ -106,8 +107,8 @@ if uploaded_file is not None:
                         st.text_input("Entity Name", key=f'entity_name_{entity_index}')
                         st.text_area("Additional Context", height=100, key=f'additional_context_{entity_index}')
             else:
-                # If there's an odd number of entity boxes, skip the extra column
-                break
+                # Skip rendering for unused columns in the last row
+                columns[i].empty()
 
 
     if st.button('Extract Entities'):
