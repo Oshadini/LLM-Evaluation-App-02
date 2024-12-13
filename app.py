@@ -80,7 +80,7 @@ if uploaded_file is not None:
 
     # Determine the number of rows and columns
     num_columns = 2  # Adjust the number of columns as needed
-    num_rows = int((num_entities + num_columns - 1) / num_columns)
+    num_rows = (num_entities + num_columns - 1) // num_columns
 
     st.markdown(
         """
@@ -96,8 +96,8 @@ if uploaded_file is not None:
     )
 
     for row in range(num_rows):
-        columns = st.columns(num_columns)
-        for i in range(num_columns):
+        columns = st.columns(num_columns if (row + 1) * num_columns <= num_entities else num_entities % num_columns or num_columns)
+        for i in range(len(columns)):
             entity_index = row * num_columns + i
             if entity_index < num_entities:
                 with columns[i]:
@@ -105,12 +105,6 @@ if uploaded_file is not None:
                         st.markdown(f"#### Entity Details {entity_index + 1}")
                         st.text_input("Entity Name", key=f'entity_name_{entity_index}')
                         st.text_area("Additional Context", height=100, key=f'additional_context_{entity_index}')
-
-    # Remove empty column borders by adjusting the last row
-    if num_entities % num_columns != 0:
-        extra_cells = num_columns - (num_entities % num_columns)
-        for _ in range(extra_cells):
-            columns[-(extra_cells)].empty()
 
     if st.button('Extract Entities'):
         all_entities_provided = True
