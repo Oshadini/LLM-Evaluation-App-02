@@ -96,7 +96,7 @@ if uploaded_file is not None:
     )
 
     for row in range(num_rows):
-        columns = st.columns(num_columns if (row + 1) * num_columns <= num_entities else num_entities % num_columns or num_columns)
+        columns = st.columns(num_columns if row < num_rows - 1 or num_entities % num_columns == 0 else num_entities % num_columns)
         for i in range(len(columns)):
             entity_index = row * num_columns + i
             if entity_index < num_entities:
