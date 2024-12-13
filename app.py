@@ -15,7 +15,7 @@ llm = ChatGoogleGenerativeAI(
     temperature=0,
 )
 
-st.set_page_config(layout="wide", page_title="Named Entities Extraction")
+st.set_page_config(layout="wide", page_title="Named Entities Extraction 1")
 
 
 uploaded_file = st.file_uploader("Choose a PDF file", type="pdf")
