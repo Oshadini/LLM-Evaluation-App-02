@@ -16,31 +16,7 @@ llm = ChatGoogleGenerativeAI(
 )
 
 st.set_page_config(layout="wide", page_title="Named Entities Extraction")
-st.markdown("""
-    <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
 
-    html, body, div, span, h1, h2, h3, h4, h5, app-view-root, [class*="css"] {
-        font-family: 'Poppins', sans-serif !important;
-        margin: 0;
-        padding: 0;
-        border: none !important;
-        box-shadow: none !important;
-    }
-    [data-testid="stColumn"] {
-        padding: 0 !important;
-        border: none !important;
-        box-shadow: none !important;
-    }
-    [data-baseweb="input"], [data-testid="stTextInput"], [data-testid="stTextArea"] {
-        border: none !important;
-        box-shadow: none !important;
-        background-color: transparent !important;
-    }
-    </style>
-    """, unsafe_allow_html=True)
-
-st.markdown("<h1 style='text-align: center;'>Named Entities Extraction</h1>", unsafe_allow_html=True)
 
 uploaded_file = st.file_uploader("Choose a PDF file", type="pdf")
 
