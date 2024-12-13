@@ -94,10 +94,10 @@ if uploaded_file is not None:
         """,
         unsafe_allow_html=True
     )
-
+    
     for row in range(num_rows):
-        columns = st.columns(num_columns if row < num_rows - 1 or num_entities % num_columns == 0 else num_entities % num_columns)
-        for i in range(len(columns)):
+        columns = st.columns(num_columns)
+        for i in range(num_columns):
             entity_index = row * num_columns + i
             if entity_index < num_entities:
                 with columns[i]:
@@ -105,6 +105,10 @@ if uploaded_file is not None:
                         st.markdown(f"#### Entity Details {entity_index + 1}")
                         st.text_input("Entity Name", key=f'entity_name_{entity_index}')
                         st.text_area("Additional Context", height=100, key=f'additional_context_{entity_index}')
+            else:
+                # If there's an odd number of entity boxes, skip the extra column
+                break
+
 
     if st.button('Extract Entities'):
         all_entities_provided = True
